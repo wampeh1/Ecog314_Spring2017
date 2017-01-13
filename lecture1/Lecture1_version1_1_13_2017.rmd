@@ -288,8 +288,7 @@ getwd()                                      #the current directory accessible t
 
 Now that we are familiar with R, we are going to look at the variable types that can be created in R
 
-<font color="red">Note</font>: Be mindful when creating variable names. **Symantically valid** variable names will be covered under Homeworks Q4 and Q5 in this lecture.
-
+<font color="red">Note</font>: Be mindful when creating variable names. **Symantically valid** 
  
 
 <hr shadow=NONE>
@@ -366,7 +365,7 @@ plot(x, col=1:3)                 # new function to demontrate the use of categor
 
 ```
 
-Homeworks Q1 and Q2
+Lists
 ===================
 
 #### (2) Lists, sometimes called recursive vectors because lists can contain other lists (the main difference between atomic vectors and lists).
@@ -381,7 +380,6 @@ yList
 str(xList)                       # homework, a new function
 str(yList) 
 
-# Homework Q2
 # What happens when we add different data types to a vector?
 
 v = c("a","b",1,2,3,TRUE)
@@ -418,8 +416,8 @@ A[ ,c(1,4)]   # the 1st and 4th columns
 
 ```
 
-Homeworks Q3
-=============
+Assigninging names
+==================
 
 
 If we assign names to the rows and columns of the matrix, than we can access the elements by name. 
@@ -442,11 +440,6 @@ class(A); typeof(A); dim(A); length(A)
  
 A["row_2", "col_4"]                        # element at 2nd row, 4th column 
 
-#-
-# Homework Q.3 
-B = A
-# B[1,1] = 22.9                           # is this permitted? Why?
-# B[1,1] = integer part of 22.9           # get this assignment to work
 
 
 ```
@@ -498,16 +491,12 @@ G = mtcars$gear == 3              #[,10]	 gear	 Number of forward gears
 head( mtcars[G, ] )
 ```
 
-Homeworks Q4 and Q5a and 5b
-===================
+Further Details
+===============
 
 Further details for the mtcars data set are available in the R documentation.
 ```{r }
-#summary(mtcars)                    #Homework Q4
-# help(mtcars)                      #Homework Q5.a
-
-# Homework Q5
-# List 3 more built-in data frames available in R
+summary(mtcars)                   
 
 ```
 
@@ -545,7 +534,7 @@ options(digits=3)
 ls("package:mosaic")
 
 #
-#help(mosaic)                    #Homework Q5.b
+help(mosaic)                 
 
 # Use the summary function
 summary()
@@ -554,8 +543,8 @@ summary()
 
 <hr/>
 
-Homework Q6
-===========
+Picture to Data
+===============
 
 * Data from Washington post article  Brigid Schulte, 2013, <a href="https://www.washingtonpost.com/local/2013/09/10/9c72c1d2-1a6c-11e3-8685-5021e0c41964_graphic.html">"__Who U.S.-born children are living with__"</a>, a headline from the following article <a  href="http://www.washingtonpost.com/local/children-suffer-from-growing-economic-inequality-among-families-since-recession/2013/09/10/793423ae-1a4f-11e3-82ef-a059e54c49d0_story.html">"__Children suffer from growing economic inequality among families since recession__"</a>
 
@@ -579,8 +568,8 @@ Use: `?c` to determine how the 24 values should be formatted as arguments to `c(
 
 Hint: Function arguments are separated by commas. 
 
-Homework Q7
-==========
+Take home task 1
+================
 Restructure the vector dat of length 24 into a matrix with 6 rows and hence 4 rows. 
 By default matrix(data=dat, nrow=6) will use the first 6 elements of vector
 dat as the row values in the first column, the next 6 elements as the
@@ -589,8 +578,8 @@ row values of the second column and so on for subsequent columns.
 Note many people prefer to enter data in Excel and read such files
 into R.  We will use this approach in our next set of lectures
 
-Homework Q8
-===========
+Take home task 2
+================
 A systematic approach helps when it comes to correctly labeling
 the values. 
 
@@ -613,14 +602,14 @@ mat
 
 ```
 
-Homework Q9
-===========
+Take home task 3
+================
 Install and load the "lattice" package, and use the rDot plots with lines to the origin.
 
 
 ```{r eval=FALSE, fig.width=4.5, fig.height=6}
 
-#  Homework Q9:  Uncomment the following 2 lines of text to install the lattice plotting 
+#  Take home task 4:  Uncomment the following 2 lines of text to install the lattice plotting 
 
 # install.packages("lattice")
 # library(lattice)
@@ -640,8 +629,8 @@ dotplot(mat,groups=FALSE,
 
 ```
 
-Homework Q10
-===========
+Take home task 5
+================
 * Use the help feature in R to display the version of R you are running
 * Document your script file by adding text to explain your work.
 * Save your history in a file and store in in your lecture_1 folder
