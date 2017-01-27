@@ -232,12 +232,10 @@ short <- c(-1, 1)
 # (INSERT YOUR SOLUTION HERE)
 
 
-# Part 3. Use a function to retrieve the names from the precip object and 
-#         assign those names to a new vector object called "days". Next, use 
-#         the assignment operator to set the names of precip a second time. 
-#         Use the new days object instead of typing the days of the week 
-#         again. Verify that you get the same result when you print the precip 
-#         vector
+# Part 3. Retrieve the names from the precip object and assign those names to 
+#         a new vector object called "days". Next, use the assignment operator
+#         to set the names of precip using the new object. Verify that you get 
+#         the same result in precip
     
 # (INSERT YOUR SOLUTION HERE)
 
