@@ -1,0 +1,127 @@
+\documentclass{beamer}
+\usetheme{Antibes}
+\begin{document}
+%===============================================================================
+
+\SweaveOpts{concordance=TRUE}
+\title{Exploratory Data Analysis}
+
+%---------------------------------------
+\begin{frame}
+\maketitle
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+
+%---------------------------------------
+\section{Introduction}
+
+\begin{frame}
+What is Exploratory Data Analysis?
+\end{frame}
+
+
+%---------------------------------------
+
+\section{What is EDA?}
+\begin{frame}
+Exploratory Data Analysis is 
+
+an approach to analyzing data sets to summarize their main characteristics, often with visual methods. (wikipedia \url{https://en.wikipedia.org/wiki/Exploratory_data_analysis})    
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Goals of EDA}
+
+Data focused. Gain insight into the data generating process. Summarize the data without losing information. Gather key information required to build a model. 
+
+\begin{itemize}
+\item Learn about the data, underlying structure
+\item Generate questions 
+\item help decide what sort of model fits
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{What EDA is not}
+
+Model focused: Rigorous formal approaches that impose assumptions (normality, etc.)
+\begin{itemize}
+\item Hypothesis testing, statistical inference
+\item Model Specification (regressions, ANOVA)
+\item Parameter estimation
+\end{itemize}
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}
+\frametitle{What EDA is not}
+
+Examples 
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\section{Techniques}
+\begin{frame}
+
+\begin{itemize}
+\item summary stats
+\item vizualizations: stem & leaf, scatter plots, box plots, histograms
+\item 
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\section{}
+\begin{frame}
+\frametitle{}
+
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+
+
+%===============================================================================
+\end{document}
+<< end_of_doc >>=
+@
+
+
+
+%---------------------------------------
+\section{}
+\begin{frame}
+\frametitle{}
+
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+
+\end{frame}
