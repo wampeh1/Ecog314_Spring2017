@@ -1,3 +1,7 @@
 *~
 .RData
 .Rhistory
+lecture3/*.nav
+lecture3/*.snm
+lecture3/*.toc
+lecture3/*.vrb

@@ -1,0 +1,1678 @@
+\documentclass{beamer}
+%\usetheme{Antibes}
+\usetheme{Darmstadt}
+\usepackage[noae]{Sweave}
+\usepackage{multirow}
+\usepackage{colortbl}
+\usepackage{multicol}
+%\usepackage{verbatim} 
+\newcommand{\R}[1]{\texttt{#1}}
+
+\title{Class 3 Review}
+\author{Damian Thomas}
+\date{2017-02-03}
+
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+%===============================================================================
+
+
+%---------------------------------------
+\begin{frame}
+\maketitle
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Topics}
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+\end{frame}
+
+
+
+%---------------------------------------
+\section{Jargon}
+
+\subsection{Brackets}
+\begin{frame}
+\frametitle{Brackets}
+
+Multiple symbols are called ``brackets''. To minimize confusion we will use the following terms to describe each\footnote{Source: \url{https://en.wikipedia.org/wiki/Bracket}}
+
+\begin{table}
+\begin{tabular}{c|l}
+Symbols & Names \\ \hline
+\textbf{\R{()}} & ``parenthesis'', ``round brackets'', or ``parens'' \\
+\textbf{\R{[]}} & ``brackets'' or ``square brackets'' \\
+\textbf{\R{\{\}}} & ``braces'' or ``curly brackets'' \\
+\textbf{\R{<>}} & ``angle brackets'' or ``less than'' \& ``greater than''\\
+\end{tabular}
+\end{table}
+
+
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Other Symbols}
+\begin{frame}
+\frametitle{Other Symbols}
+
+
+\begin{table}
+\begin{tabular}{c|l}
+Symbols & Names \\ \hline
+\textbf{\R{\textbackslash}} & ``backslash''  \\
+\textbf{\R{/}} & ``slash'' or ``forward slash'' \\
+\textbf{\R{|}} & ``pipe'' or ``vertical pipe'' \\
+\textbf{\R{!}} & ``exclamation point'' or ``bang'' \\
+\end{tabular}
+\end{table}
+
+
+\end{frame}
+
+
+%---------------------------------------
+\section{R Data Structures}
+\begin{frame}
+\frametitle{R Data Structures by Content Type and Number of Dimensions\footnote{Source: Advanced R (\url{http://adv-r.had.co.nz/})}}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   & Homogeneous   & Heterogeneous \\ \hline
+1d & Atomic vector & List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Atomic Vectors}
+
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d & \cellcolor{gray!25} Atomic vector &  List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atomic vectors: Concept}
+
+\textbf{Atomic Vector}: one data type, one dimension
+\pause
+
+Analogous to a...
+\begin{itemize}
+\item<1-> Single column in a data set
+\item<1-> Single time series with evenly spaced observations
+\item<1-> Mathematical vector in linear algebra
+\item<1-> Array data structure in computer science
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Combine Function: \R{c()}}
+
+\begin{itemize}
+\item Purpose: Create vectors
+\item Input: one or more atomic vectors\footnote{Other data structures are permitted. See documentation: \R{?c()}}
+\item Output: one atomic vector, with one type and one dimension
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Combine Function: \R{c()}, examples}
+
+Separate inputs with commas (required) \textbf{and} spaces (preferred)
+<< eval = FALSE >>=
+c(1, 2, 3) # returns a numeric vector
+@
+\pause
+<< echo = FALSE >>=
+c(1, 2, 3)
+@
+\pause
+Mixed types trigger coercion\footnote{The data type is automatically changed} to a single type. 
+<< eval = FALSE >>=
+c("one", 2, 3.14, FALSE)  # returns a character vector
+@
+\pause
+<< echo = FALSE >>=
+c("one", 2, 3.14, FALSE)
+@
+\pause
+Vector inputs are concatenated 
+<< eval = FALSE >>=
+foo <- c("T", "W")
+bar <- c("Th", "F")
+c("M", foo, c(bar, "S", "Su")) # returns 7 elements 
+@
+\pause
+<< echo = FALSE >>=
+foo <- c("T", "W")
+bar <- c("Th", "F")
+c("M", foo, c(bar, "S", "Su"))
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atomic Vectors, Example: Recent FRB Chairs}
+
+<< >>=
+surname <- c("Yellen", "Bernanke", "Greenspan")
+@
+\pause
+<< >>=
+appointed <- c(2014, 2006, 1987)
+@
+\pause
+<< >>=
+has_beard <- c(FALSE, TRUE, FALSE)
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Atomic Vectors, Example: Recent FRB Chairs}
+
+What class \& length will each vector have?
+<< eval = FALSE >>=
+str(surname)
+str(appointed)
+str(has_beard)
+@
+\pause
+<< echo = FALSE >>=
+str(surname)
+str(appointed)
+str(has_beard)
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Lists}
+
+
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d & Atomic vector &  \cellcolor{gray!25} List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lists: Concept}
+
+\textbf{List}: many types, one dimension
+\pause
+
+Analogous to...
+\begin{itemize}
+\item<1-> Single row in a data set
+\item<1-> Collection of features describing a single of entity
+\item<1-> Associative array structure in computer science
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The List Function: \R{list()}}
+\begin{itemize}
+\item Purpose: create lists
+\item Input: one or more objects (of any type)
+\item Output:  one list object, with one or more types and one dimension
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The List Function: \R{list()}, examples}
+
+Separate inputs with commas (required) and spaces (preferred)
+<< eval = FALSE >>=
+list("Yes", TRUE, 3.14, c(foo, bar)) # returns 4-elments
+@
+\pause
+<< echo = FALSE >>=
+list("Yes", TRUE, 3.14, c(foo, bar))
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lists, Example: Recent FRB Chairs}
+
+<< >>=
+current_chair <- list("Yellen", 2014, FALSE)
+@
+\pause
+<< >>=
+prior_chair   <- list("Bernanke", 2006, TRUE)
+@
+\pause
+<< >>=
+earlier_chair <- list("Greenspan", 1987, FALSE)
+@
+\pause
+Assign names to list elements
+<< >>=
+listnames <- c("surname", "appointed", "has_beard")
+
+names(current_chair) <- listnames
+names(prior_chair)   <- listnames
+names(earlier_chair) <- listnames
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Lists, Example: Recent FRB Chairs}
+
+
+\begin{columns}[T]
+\begin{column}[T]{.5\linewidth}
+What class \& length will each list have? 
+\pause
+<< eval = FALSE >>=
+str(current_chair)
+str(prior_chair)
+str(earlier_chair)
+@
+\end{column}
+\begin{column}[T]{.5\linewidth}
+\pause
+<< echo = FALSE >>=
+str(current_chair)
+str(prior_chair)
+str(earlier_chair)
+@
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Factors}
+
+
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d &  \cellcolor{gray!25}  Atomic vector &  List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Factors: Concept}
+
+\textbf{Factor Vector}: one type,  one dimension, contents restricted to a specified set of discrete values
+\pause
+
+Analogous to...
+
+\begin{itemize}
+\item Discrete variable with few values, such as sex or employment status
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Factor Function: \R{factor()}}
+
+
+\begin{itemize}
+\item Purpose: create factor vectors
+\item Input: any atomic vector (required), a vector of possible values (optional), and a vector of corresponding labels (optional)\footnote{Refer to the documentation \R{?factor()}} 
+\item Output: an integer vector with embedded attributes to define the set of possible levels and their labels
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Factor Function: \R{factor()}, examples}
+
+Raw data
+<< >>=
+rps_data <- c("Rock", "Paper", "Scissors", "Rock", 
+              "Scissors", "Paper", "Paper", 
+              "Scissors", "Rock", "Rock", "Paper")
+@
+\pause
+Convert to a factor
+<< >>=
+rps <- factor(rps_data, 
+              levels = c("Rock", "Paper", "Scissors"))
+@
+\pause
+View object structure -- data stored as integer values
+<< >>=
+str(rps)
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Factor Function: \R{factor()}, examples}
+
+Subset
+<< >>=
+rps[3]
+@
+\pause
+Attempt to overwrite with invalid level
+<< >>=
+rps[3] <- "foo"
+@
+\pause
+The result is NA
+<< >>=
+rps[3]
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Factor Function: \R{factor()}, examples}
+
+View all attributes of the factor
+<< >>=
+attributes(rps)
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Data Frames}
+
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d &  Atomic vector &  List \\
+2d & Matrix        & \cellcolor{gray!25} Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Data Frame: Concept}
+
+\textbf{Data Frame}: many types, two dimensions
+\pause
+
+Analogous to...
+\begin{itemize}
+\item A bundle of columns (atomic vectors) with the same length
+\item A data set 
+    \begin{itemize} 
+    \item each row represents an observation
+    \item each column represents a variable 
+    \end{itemize}
+\item Multiple draws from a population with associated measures
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The Data Frame Function: \R{data.frame()}}
+
+\begin{itemize}
+\item Purpose: Creates data frames
+\item Input: one or more atomic vectors or factors of equal length\footnote{Shorter vectors will be recycled to meet this criteria}
+\item Output: one data frame, with input vectors arranged as columns of data
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The data frame function: data.frame(), examples}
+
+Recall the vectors created earlier:
+<< >>=
+surname
+appointed
+has_beard
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The data frame function: data.frame(), examples}
+
+Construct a data frame using vectors
+
+<< >>=
+frb_chair <- data.frame(surname,
+                        appointed,
+                        has_beard)
+@
+\pause
+<< >>=
+frb_chair
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The data frame function: data.frame(), examples}
+
+Examine attributes: object type and dimensions
+<< eval = FALSE >>=
+class(frb_chair)
+nrow(frb_chair)
+ncol(frb_chair)  # same as length(frb_chair)
+str(frb_chair)
+@
+\pause
+<< echo = FALSE >>=
+class(frb_chair)
+nrow(frb_chair)
+ncol(frb_chair)  # same as length(frb_chair)
+str(frb_chair)
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The data frame function: data.frame(), examples}
+
+Use function option \R{stringsAsFactors = FALSE} to disable automatic conversion of character vectors to factors
+<< >>=
+frb_chair <- data.frame(surname,    
+                        appointed,
+                        has_beard,
+                        stringsAsFactors = FALSE)
+@
+\pause
+<< >>=
+frb_chair
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The data frame function: data.frame(), examples}
+
+Examine attributes again
+<< eval = FALSE >>=
+str(frb_chair)
+@
+\pause
+<< echo = FALSE >>=
+str(frb_chair)
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\section{Subsetting}
+\begin{frame}
+\frametitle{Subsetting}
+
+Subsetting operators 
+\begin{itemize}
+\item \R{\textbf{[}} \textit{bracket}
+\item \R{\textbf{[[}} \textit{double bracket}
+\item \R{\textbf{\$}} \textit{dollar sign}
+\end{itemize}
+\pause
+These operators enable \textbf{access} to the data stored in R data structures for:
+\begin{itemize}
+\item Retrieving data from an object
+\item Changing data in an object
+\item Deleting data from an object
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Vectors}
+
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d & \cellcolor{gray!25} Atomic vector &   List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works
+\begin{itemize}
+\item Given \R{x}, an atomic vector with \R{length(x) == n},
+\item And \R{i}, a vector of \textit{positive} integers, with \R{all(i <= n)}.
+\item Then, \R{x[i]} will return the elements in \R{x} indexed by \R{i}.
+\item \textit{In other words}, ``return the \R{i}-th element(s) from \R{x}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 1: ``x'' is the days of the week, ``i'' is 5
+<< >>=
+dow <- c("S", "M", "T", "W", "Th", "F", "Sa")
+@
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< eval = FALSE >>=
+dow[5] # retrieve the 5th element 
+@
+\pause
+<< echo = FALSE >>=
+dow[5] # retrieve the 5th element 
+@
+\pause
+Easy. Let's do another.
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 2: ``x'' is the days of the week, ``i'' is 2, 4, 6
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< eval = FALSE >>=
+dow[c(2, 4, 6)] 
+@
+\pause
+<< echo = FALSE >>=
+dow[c(2, 4, 6)] 
+@
+\pause
+No problem.
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works with \R{-i}
+\begin{itemize}
+\item Given \R{x}, an atomic vector with \R{length(x) == n},
+\item And \R{i}, a vector of \textit{positive} integers, with \R{all(i <= n)}.
+\item Then, \R{\textbf{x[-i]}} will return all of the elements in \R{x}, \textit{excluding} those indexed by \R{abs(i)}.
+\item \textit{In other words}, ``return everything minus the \R{i}-th element(s) from \R{x}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 3: ``x'' is the days of the week, ``i'' is -5
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< eval = FALSE >>=
+dow[-5] # exclude the 5th element 
+@
+\pause
+<< echo = FALSE >>=
+dow[-5] # exclude the 5th element 
+@
+\pause
+Light work.
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 4: ``x'' is the days of the week, ``i'' is a negative integer vector
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< eval = FALSE >>=
+dow[-c(2, 4, 6)]  # negate i to exclude
+@
+\pause
+<< echo = FALSE >>=
+dow[-c(2, 4, 6)]   # negate i to exclude
+@
+\pause
+Bored yet?
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works with \textit{logical} \R{i}
+\begin{itemize}
+\item Given \R{x}, an atomic vector with \R{length(x) == n},
+\item And \R{i}, a vector of \textit{logical} values, with \R{length(i) == n}.
+\item Then, \R{\textbf{x[i]}} will return all of the elements in \R{x}, corresponding to the \R{TRUE} values in \R{i}.
+\item \textit{In other words}, ``Take every element in \R{x} where \R{i} is \R{T}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 5: ``x'' is the days of the week, ``i'' is logical vector
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< eval = FALSE >>=
+dow[c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE)]  # keep weekdays
+@
+\pause
+<< echo = FALSE >>=
+dow[c(FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE)]
+@
+\pause
+Easy, but tedious.
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works with an \textit{expression} \R{i} that resolves to logical values.
+\begin{itemize}
+\item Given \R{x}, an atomic vector with \R{length(x) == n},
+\item And \R{i}, \textit{an expression that returns a vector of logical} values, with \R{length(i) == n}.
+\item Then, \R{\textbf{x[i]}} will return all of the elements in \R{x}, corresponding to the \R{TRUE} values in \R{i}.
+\item \textit{In other words}, ``Take every element in \R{x} where \R{i} is \R{T}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 6: ``x'' is the days of the week, ``i'' is a logical expression
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< >>=
+nchar(dow) == 1  # logical expression
+@
+\pause
+<< eval = FALSE >>=
+dow[nchar(dow) == 1]  # keep 1-letter days
+@
+\pause
+<< echo = FALSE >>=
+dow[nchar(dow) == 1]
+@
+\pause
+Now we're getting somewhere. One more.
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works with an \textit{expression} \R{i} that resolves to integer values.
+\begin{itemize}
+\item Given \R{x}, an atomic vector with \R{length(x) == n},
+\item And \R{i}, \textit{an expression that returns a vector of integers}, with \R{all(i <= n)}.
+\item Then, \R{\textbf{x[i]}} will return all of the elements in \R{x}, indexed by \R{i}.
+\item \textit{In other words}, ``return the \R{i}-th element(s) from \R{x}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 7: ``x'' is the days of the week, ``i'' is an integer expression
+\pause
+<< >>=
+print(dow)
+@
+\pause
+<< >>=
+grep('S', dow) # where can I find an S?
+@
+\pause
+<< eval = FALSE >>=
+dow[grep('S', dow)]  # keep S-letter days
+@
+\pause
+<< echo = FALSE >>=
+dow[grep('S', dow)]
+@
+\pause
+Wheel of Fortune. 
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+What happens when we do this?
+<< eval = FALSE >>=
+dow[TRUE]
+@
+\pause
+<< eval = TRUE, echo = FALSE >>=
+dow[TRUE]   
+@
+\pause
+What happens when we do this?
+<< eval = FALSE >>=
+dow[c(1:5, 5:1)]  
+@
+\pause
+<< eval = TRUE, echo = FALSE >>=
+dow[c(1:5, 5:1)]  
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+How \R{[} works when \R{x} is a named vector.
+\begin{itemize}
+\item Given \R{x}, a named atomic vector with \R{length(x) == n},
+\item And \R{j}, a character vector, with \R{all(j \%in\% names(x))}.
+\item Then, \R{\textbf{x[j]}} will return all of the elements in \R{x}, where \R{names(x) \%in\% j}.
+\item \textit{In other words}, ``return the element(s) named \R{j}''
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Vectors: use \R{[}}
+
+Example 8: ``x'' is the days of the week, with named elements, and ``j'' is a character expression
+\pause
+<< >>=
+names(dow) <- c("Funday", "Motovation", 
+                "Transformation", 
+                "Wayback", "Throwback", 
+                "Friday", "Social")
+@
+\pause
+<< >>=
+str(dow)
+@
+\pause
+<< eval = FALSE >>=
+c("Wayback", "Throwback")
+@
+\pause
+<< eval = FALSE >>=
+dow[c("Wayback", "Throwback")]
+@
+\pause
+<< echo = FALSE >>=
+dow[c("Wayback", "Throwback")]
+@
+
+\end{frame}
+
+
+%---------------------------------------
+
+\subsection{Lists}
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d & Atomic vector &  \cellcolor{gray!25} List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Lists: [[ and \$}
+
+How \R{[[} works - retrieve one element only, by name or by position
+\begin{itemize}
+\item Given \R{x}, a list with \R{length(x) == n},
+\item And \R{j}, a \textit{single} character value where \R{j \%in\% names(x)},
+\item Or \R{j}, a \textit{single} integer value where \R{j <= n}.
+\item Then, \R{\textbf{x[[j]]}} will return the \textit{single} element in \R{x}, named or indexed by \R{j}.
+\item \textit{In other words}, ``return the element named \R{j} or the \R{j}th element''
+\end{itemize}
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Lists: [[ and \$}
+
+<< >>=
+student <- list(universty = "Howard", 
+                major     = "Economics", 
+                GPA       = 3.2)
+@
+\pause
+<< eval = FALSE >>=
+student[[3]]        # 3rd part of student object
+@
+\pause
+<< echo = FALSE >>=
+student[[3]]
+@
+\pause
+<< eval = FALSE >>=
+student[["GPA"]]    # GPA of student
+@
+\pause
+<< echo = FALSE >>=
+student[["GPA"]]
+@
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Lists: [[ and \$}
+
+
+How \R{\$} works - retrieve one element only, by name
+\begin{itemize}
+\item Given \R{x}, a list with \R{length(x) == n},
+\item And \R{j}, a \textit{single} character value where \R{j \%in\% names(x)}.
+\item Then, \R{\textbf{x\$j}} will return the \textit{single} element in \R{x}, named \R{j}.
+\item \textit{In other words}, ``return the element named \R{j}''
+\end{itemize}
+
+
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Lists: [[ and \$}
+
+<< eval = FALSE >>=
+student$GPA         # student's GPA
+@
+\pause
+<< echo = FALSE >>=
+student$GPA
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\begin{tabular}{c|ll}
+   &  Homogeneous   & Heterogeneous \\ \hline
+1d & Atomic vector &  List \\
+2d & Matrix        & \cellcolor{gray!25} Data Frame \\
+$n$d & Array       & - \\ 
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+%---------------------------------------
+\subsection{Data Frames}
+
+\begin{frame}
+\frametitle{Subsetting Data Frames: [, [[ and \$}
+
+All three subset operators work for data frames. 
+
+\begin{itemize}
+\item \R{\$} -- get a single column vector by name 
+\item \R{[[} -- get a single column vector by name or by position
+\item \R{[}  -- get a subset of rows and\slash or a subset of columns
+\begin{itemize}\item retrieve rows by position or logical condition \item select columns by name, position, or logical condition \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: \$}
+
+Recall the existing data frame:
+<< >>=
+str(frb_chair)
+print(frb_chair)
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: \$}
+
+Retrieve the \$\R{j}\textbf{-th} column vector in the data frame, where \R{j} is the name of a column
+<< eval = FALSE >>=
+frb_chair$name
+@
+\pause
+<< echo = FALSE >>=
+frb_chair$name
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [[}
+
+Retrieve the \$\R{j}\textbf{-th} column vector in the data frame, where \R{j} is the name  of a column
+<< eval = FALSE >>=
+frb_chair[["year"]]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[["year"]]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [[}
+
+
+Retrieve the [[\R{j}\textbf{-th}]] column vector in the data frame, where \R{j} is the position of a column
+<< eval = FALSE >>=
+frb_chair[[3]]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[[3]]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [}
+
+Retrieve the \R{i}\textbf{-th} rows of the \R{j}\textbf{-th} columns in the data frame, where \R{i} and \R{j} are the positions of the rows and columns, respectively.
+
+<< eval = FALSE >>=
+frb_chair[2, 1]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[2, 1]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [}
+
+Retrieve the \R{i}\textbf{-th} rows of the \R{j}\textbf{-th} columns in the data frame, where \R{i} and \R{j} are vectors of positions for the rows and columns, respectively.
+
+<< eval = FALSE >>=
+frb_chair[c(2,3), c(1,3)]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[c(2,3), c(1,3)]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [}
+
+Retrieve the \R{j}\textbf{-th} columns in the data frame, \R{j} is a character vector with the names of the desired columns.
+
+<< eval = FALSE >>=
+frb_chair[, c("surname", "has_beard")]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[, c("surname", "has_beard")]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [}
+
+Retrieve the \R{i}\textbf{-th} rows in the data frame, where \R{i} is a logical vector with \R{TRUE} values at corresponding positions for the desired rows.
+
+<< eval = FALSE >>=
+frb_chair[ frb_chair$appointed >= 2000, ]
+@
+\pause
+<< echo = FALSE >>=
+frb_chair[ frb_chair$appointed >= 2000, ]
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: [}
+
+Mix and match!
+
+<< eval = FALSE >>=
+i <- frb_chair$has_beard == TRUE | frb_chair$appointed < 2000
+j <- names(frb_chair)
+frb_chair[i, j]
+@
+\pause
+<< echo = FALSE >>=
+i <- frb_chair$has_beard == TRUE | frb_chair$appointed < 2000
+j <- names(frb_chair)
+frb_chair[i, j]
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{The subset Function: subset()}
+
+\begin{itemize}
+\item Purpose: subset data frames
+\item Input: a data frame, a logical expression for rows (optional), and a numeric or character vector identifying columns (optional)\footnote{See documentation \R{?subset}}
+\item Output: a data frame, with optional subsets
+\end{itemize}
+
+Equivalent to the \R{[} operator. Subset a data frame based on a logical vector, \R{i}, for desired the rows and a character vector, \R{j}, for the desired variable names.
+
+<< eval = FALSE>>=
+subset(frb_chair, subset = i, select = j) 
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: subset()}
+
+<< eval = FALSE >>=
+subset(frb_chair, 
+       subset = c(TRUE, TRUE, FALSE), 
+       select = c("surname", "appointed")) 
+@
+\pause
+<< echo = FALSE >>=
+subset(frb_chair, 
+       subset = c(TRUE, TRUE, FALSE), 
+       select = c("surname", "appointed"))  
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: subset()}
+
+<< eval = FALSE >>=
+subset(frb_chair, 
+       frb_chair$has_beard == TRUE | frb_chair$appointed > 2000) 
+@
+\pause
+<< echo = FALSE >>=
+subset(frb_chair, 
+       frb_chair$has_beard == TRUE | frb_chair$appointed > 2000)  
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subsetting Data Frames: subset()}
+
+<< eval = FALSE >>=
+i <- frb_chair$has_beard == TRUE | frb_chair$appointed < 2000
+j <- names(frb_chair)
+subset(frb_chair, i, j) 
+@
+\pause
+<< echo = FALSE >>=
+i <- frb_chair$has_beard == TRUE | frb_chair$appointed < 2000
+j <- names(frb_chair)
+subset(frb_chair, i, j) 
+@
+\end{frame}
+
+
+%---------------------------------------
+\section{Iteration}
+
+\subsection{Iterate by element}
+
+\begin{frame}[fragile]
+\frametitle{Iterate over vector elements}
+Recall the surname vector:
+<< >>=
+surname
+@
+\pause
+<< eval = FALSE >>=
+for ( s in surname ) {
+    print(s)
+}
+@
+\pause
+<< echo = FALSE >>=
+for ( s in surname ) {
+    print(s)
+}
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\subsection{Iterate by index}
+\begin{frame}[fragile]
+\frametitle{Iterate over vector indices}
+<< eval = FALSE >>=
+for ( i in 1:length(surname) ) {
+    print(surname[i])
+}
+@
+\pause
+<< echo = FALSE >>=
+for ( i in 1:length(surname) ) {
+    print(surname[i])
+}
+@
+
+\end{frame}
+
+
+%---------------------------------------
+
+\subsection{Nested Loops}
+
+\begin{frame}[fragile]
+\frametitle{Nested Loops}
+Recall the \R{frb\_chair} data frame:
+<< >>=
+frb_chair
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Nested Loops}
+
+<< eval = FALSE >>=
+for ( i in 1:nrow(frb_chair) ) {
+    for ( j in 1:ncol(frb_chair) ) {
+        message <- paste(i, j, frb_chair[i, j])
+        print(message)
+    }
+}
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Nested Loops}
+<< echo = FALSE >>=
+for ( i in 1:nrow(frb_chair) ) {
+    for ( j in 1:ncol(frb_chair) ) {
+        message <- paste(i, j, frb_chair[i, j])
+        print(message)
+    }
+}
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\section{Functions}
+\subsection{Single Parameter}
+
+\begin{frame}[fragile]
+\frametitle{Create a function with one parameter}
+A function is just an object with instructions in it. The instructions tell the function how to manipulate objects.
+<< >>=
+f <- function(x) {
+    2*x
+}
+@
+\pause
+What happens when we print the object f?
+<< eval = FALSE >>=
+f
+@
+\pause
+<< echo = FALSE >>=
+f
+@
+...R prints the instructions embedded in \R{f}: \textit{``I take one input object and make a private copy called x. I will multiply my x by 2, then return the result''}
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Call a function with one argument}
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+f(x)
+@
+\pause
+<< echo = FALSE >>=
+x <- c(1, 2, 3)
+f(x)
+@
+\pause
+What if we run it without arguments?
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+f()
+@
+\pause
+<< eval = FALSE >>=
+# Error in f() : argument "x" is missing, with no default
+@
+Why doesn't that work? Why didn't \R{f} see the \R{x}? It's right there!
+\end{frame}
+
+
+%---------------------------------------
+
+\subsection{No Parameters}
+\begin{frame}[fragile]
+\frametitle{Create a function with no parameters}
+<< >>=
+g <- function() {
+    2*x
+}
+@
+\pause
+What happens when we print the object g?
+<< eval = FALSE >>=
+g
+@
+\pause
+<< echo = FALSE >>=
+g
+@
+...R prints the instructions embedded in \R{g}: \textit{``I will find an x somewhere. I will multiply it x by 2, then return the result''}
+
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Call a function with no parameters}
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+g(x)
+@
+\pause
+<< echo = TRUE >>=
+# Error in g(x) : unused argument (x)
+@
+\R{g} doesn't know what it's supposed to do with that.
+
+\pause
+What if we run g without arguments?
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+g()
+@
+\pause
+<< echo = FALSE >>=
+x <- c(1, 2, 3)
+g()
+@
+Why does that work? How did \R{g} know about the \R{x}?
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Braces}
+\begin{frame}[fragile]
+\frametitle{Lets talk about \R{\{\}}}
+In R, \R{\{\}} group expressions or code blocks\footnote{Multiple lines of code}. When used along with a function or a for loop they also imply a separate environment\footnote{memory space}
+\pause
+What is the output here?
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+f <- function(x) { 
+    y <- 1
+    x + y
+}
+f(x)
+print(y)
+@
+\pause
+<< echo = FALSE >>=
+x <- c(1, 2, 3)
+f <- function(x) { 
+    y <- 1
+    x + y
+}
+f(x)
+@
+<< >>=
+# Error in print(y) : object 'y' not found
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\subsection{Named Parameters}
+\begin{frame}[fragile]
+\frametitle{Create a function with a named parameter, and a default value}
+Use a named parameter, with a default value
+<< eval = TRUE >>=
+g <- function(x = NA) {
+    2*x
+}
+@
+\R{g}: \textit{``I will assume my x is NA until given a value. I will multiply my x by 2, then return the result''}
+\pause
+What if we run g without arguments?
+<< eval = FALSE >>=
+x <- c(1, 2, 3)
+g()
+@
+\pause
+<< echo = FALSE >>=
+x <- c(1, 2, 3)
+g()
+@
+\R{g} doesn't know about the \R{x} anymore. It has it's own parameter now.
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Call a function with a named parameter}
+Use a named parameter, to refer to an environment variable
+<< eval = FALSE >>=
+y <- c(1, 2, 3)
+g(x = y)
+@
+\pause
+<<  echo = FALSE >>=
+y <- c(1, 2, 3)
+g(x = y)
+@
+\R{g}: \textit{``I will copy the public y to my x. I will multiply my x by 2, then return the result''}
+
+\pause
+<<  echo = TRUE >>=
+x <- c(1, 2, 3)
+g(y)
+@
+Same thing, the argument in the first position is copied to the internal x object
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Create a function with multiple named parameters, and default values}
+<< eval = TRUE >>=
+f <- function(x = NA, y = NA, z = NA) {
+    (x - y) * z
+}
+@
+\pause
+<< eval = FALSE >>=
+f(x = 3, y = 2, z = 1)
+@
+\pause
+<< echo = FALSE >>=
+f(x = 3, y = 2, z = 1)
+@
+\pause
+Named parameters can be moved around
+<< eval = FALSE >>=
+f(x = 3, y = 2, z = 1) == f(z = 1, y = 2, x = 3)
+@
+\pause
+<< echo = FALSE >>=
+f(x = 3, y = 2, z = 1) == f(z = 1, y = 2, x = 3)
+@
+\pause
+Unnamed parameters cannot
+<< eval = FALSE >>=
+f(1, 2, 3) == f(3, 2, 1)
+@
+\pause
+<< echo = FALSE >>=
+f(1, 2, 3) == f(3, 2, 1)
+@
+
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\section{References}
+\begin{frame}[fragile]
+\frametitle{References}
+
+
+R 
+\begin{itemize}
+\item \url{http://adv-r.had.co.nz/}
+\item \url{http://tryr.codeschool.com/}
+\end{itemize}
+
+
+Code Style
+\begin{itemize}
+\item \url{https://google.github.io/styleguide/Rguide.xml}
+\item \url{http://adv-r.had.co.nz/Style.html}
+\end{itemize}
+
+
+
+\end{frame}
+
+
+%===============================================================================
+\end{document}
