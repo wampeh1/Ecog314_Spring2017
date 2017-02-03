@@ -1,50 +1,146 @@
 \documentclass{beamer}
 \usetheme{Antibes}
+\usepackage[noae]{Sweave}
+\usepackage{multirow}
+%\usepackage{verbatim} 
+
+\title{Exploratory Data Analysis}
+\author{Damian Thomas}
+\date{2017-02-03}
+
 \begin{document}
+\SweaveOpts{concordance=FALSE}
 %===============================================================================
 
-\SweaveOpts{concordance=TRUE}
-\title{Exploratory Data Analysis}
 
 %---------------------------------------
 \begin{frame}
 \maketitle
+
 \end{frame}
 
 
 %---------------------------------------
 \begin{frame}
+\frametitle{Topics}
+
 \tableofcontents
-\end{frame}
-
-
-%---------------------------------------
-\section{Introduction}
-
-\begin{frame}
-What is Exploratory Data Analysis?
-\end{frame}
-
-
-%---------------------------------------
-
-\section{What is EDA?}
-\begin{frame}
-Exploratory Data Analysis is 
-
-an approach to analyzing data sets to summarize their main characteristics, often with visual methods. (wikipedia \url{https://en.wikipedia.org/wiki/Exploratory_data_analysis})    
 
 \end{frame}
 
 
+
+%---------------------------------------
+\section{Review}
+\subsection{R Data Structures}
+\begin{frame}
+\frametitle{R Data Structures}
+
+\begin{table}
+\caption{R Data Structures \par by Content Type and Number of Dimensions}
+\begin{tabular}{c|ll}
+   & Homogeneous   & Heterogeneous \\ \hline
+1d & Atomic vector & List \\
+2d & Matrix        & Data Frame \\
+$n$d & Array       & \\ 
+
+\end{tabular}
+\end{table}
+
+\end{frame}
+
 %---------------------------------------
 \begin{frame}
-\frametitle{Goals of EDA}
+\frametitle{Atomic vector}
+<< atomic_vectors >>==
+chair <- "Yellen"
+str(chair)
+tenure <- 
+@
+\end{frame}
 
-Data focused. Gain insight into the data generating process. Summarize the data without losing information. Gather key information required to build a model. 
+%---------------------------------------
+\subsection{Brackets}
+\begin{frame}
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Subsetting}
+\begin{frame}
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Iteration}
+\begin{frame}
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Functions}
+\begin{frame}
+\end{frame}
+
+
+
+%---------------------------------------
+\section{Importing Data}
+\begin{frame}
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+<< write_anscombe_data, echo = FALSE >>=
+data("anscombe")
+write.csv(anscombe, file = "data/anscombe.csv", row.names = FALSE)
+Sys.chmod("data/anscombe.csv", mode = "0777")
+@
+
+<< read_anscombe_data, echo = TRUE >>=
+# 
+setwd("~/projects/hu/Ecog314_Spring2017/lecture3/")
+anscombe <- read.csv("data/anscombe.csv")
+str(anscombe)
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\section{Exploratory Data Analysis}
+
+
+\subsection{What is it?} 
+
+\begin{frame}
+\frametitle{What is Exploratory Data Analysis?} 
+
+\begin{quote}
+In statistics, exploratory data analysis (EDA) is an approach to analyzing data sets to summarize their main characteristics, often with visual methods.\footnote{Source: \url{https://en.Wikipedia.org/wiki/Exploratory_data_analysis}}
+\end{quote}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{EDA is:}
 
 \begin{itemize}
+\item Data focused
+\item Informal. No model is specified
+\item Gain insight into the data generating process. 
 \item Learn about the data, underlying structure
+\item Summarize the data without losing information. 
+\item Gather key information required to build a model. 
 \item Generate questions 
 \item help decide what sort of model fits
 \end{itemize}
@@ -55,44 +151,87 @@ Data focused. Gain insight into the data generating process. Summarize the data 
 
 %---------------------------------------
 \begin{frame}
-\frametitle{What EDA is not}
+\frametitle{EDA is \em{not}:}
 
-Model focused: Rigorous formal approaches that impose assumptions (normality, etc.)
 \begin{itemize}
-\item Hypothesis testing, statistical inference
+\item Model focused
+\item Dependent on assumptions (randomness, normality, etc.)
+\item A rigorous formal approach
 \item Model Specification (regressions, ANOVA)
 \item Parameter estimation
+\item Hypothesis testing \slash statistical inference
 \end{itemize}
 
 \end{frame}
 
-%---------------------------------------
-\begin{frame}
-\frametitle{What EDA is not}
 
-Examples 
-\begin{itemize}
-\item 
-\item 
-\item 
-\end{itemize}
 
-\end{frame}
 
 
 %---------------------------------------
 \section{Techniques}
 \begin{frame}
 
+\frametitle{Techniques}
 \begin{itemize}
-\item summary stats
-\item vizualizations: stem & leaf, scatter plots, box plots, histograms
-\item 
+\item Summary statistics
+\item Visualizations
 \end{itemize}
 
 \end{frame}
 
 
+
+
+%---------------------------------------
+\subsection{Five number summary}
+\begin{frame}
+
+\frametitle{Tukey's five number summary}
+
+\begin{itemize}
+\item minimum: smallest value
+\item lower quartile: 25th percentile
+\item median: middle value
+\item upper quartile: 75th percentile
+\item maximum: largest value
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Tukey's five number summary in R}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\end{frame}
+
+
+%---------------------------------------
+\subsection{Five number summary}
+\begin{frame}
+
+Key summary statistics 
+\begin{itemize}
+\item Extremes
+\item Location
+\item Spread
+\end{itemize}
+
+\end{frame}
+
+%---------------------------------------
+\subsection{Box plot}
+\begin{frame}
+\end{frame}
 
 %---------------------------------------
 \section{}
@@ -106,12 +245,33 @@ Examples
 \end{itemize}
 
 
+\end{frame}
+
+
 %===============================================================================
 \end{document}
 << end_of_doc >>=
 @
 
 
+\begin{itemize}
+\item Location
+\item Spread
+\item Extreme values
+\item Shape
+\end{itemize}
+
+\begin{comment}
+\item Visualizations
+    \begin{itemize}
+    \item Box plot
+    \item Scatter plot
+    \item Line plot
+    \item Bar plot
+    \item Histogram
+    \end{itemize}
+\end{itemize}
+\end{comment}
 
 %---------------------------------------
 \section{}
