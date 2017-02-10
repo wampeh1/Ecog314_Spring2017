@@ -3,29 +3,19 @@
 # What automotive features were good predictors of quarter mile time in 1974?
 # 
 # INSTRUCTIONS: complete the program below. You will need to make choices about 
-# how to use the data, and fix several bugs. The comments with the prompt
-# "PROBLEM x" will provide additional instructions. When you are done post the
-# .R file to piazza under hw4 and share it with instructors
+# how to use the data, and fix several bugs (many are marked with ???). 
+# Look for The comments in the code with the prompt "PROBLEM 1", 2, 3, etc. 
+# these comments will provide additional instructions. Share your progress 
+# by posting the .R file to piazza alomgm with hw4 and share it with instructors
 #
 # Created <when> by <who>
 #-------------------------------------------------------------------------------
-
-# Set Working Directory
-
-# PROBLEM 1: working directory not set
-# Replace the setwd("") command below. If you're not sure what to type,
-# use the "Session" menu above to set the working directory to the location
-# of the current source file, then copy the command that appears in the console
-# remember to clear objects from your environment before you start
-
-setwd(???) 
-
 
 #------------------
 # Get Data
 #------------------
 
-# PROBLEM 2: wrong url
+# PROBLEM 1: wrong url
 # replace it with https://raw.githubusercontent.com/wampeh1/Ecog314_Spring2017/master/lecture4/data/mtcars.csv
 # and download the data
 
@@ -53,7 +43,7 @@ unique(mtcars$mm)
 # Tidy & Transform
 #-----------------
 
-# PROBLEM 3: power to weight ratio not calculated
+# PROBLEM 2: The new power to weight ratio variable was not calculated
 # Fix the assignment below using variables from the mtcars data frame
 # Compute power to weight ratio (fix the code below)
 
@@ -67,7 +57,7 @@ import_makes <- c("Mazda", "Datsun", "Merc", "Fiat", "Honda",
                   "Toyota", "Lotus", "Porsche", "Ferrari", "Maserati", 
                   "Volvo")
 
-# PROBLEM 4: Loop to calssify import/domestic doesn't work
+# PROBLEM 3: Loop to calssify import/domestic doesn't work
 # Fill in the ??? to create a loop that correctly assigns a label
 # to imported cars
 
@@ -89,7 +79,7 @@ mtcars[mtcars$origin != "imported", "origin"] <- "domestic")
 # Summarize
 #-----------------
 
-# PROBLEM 5: Summary isn't using the new variable, output is hard to read.
+# PROBLEM 4: Summary isn't using the new variable, output is hard to read.
 # Change the aggregation to use the new "origin" variable
 # Assign the result of aggregate to a data frame, and give the 
 # columns names using the names() function or an alternative.
@@ -107,7 +97,7 @@ print(???)
 # Visualize
 #-----------------
 
-# PROBLEM 6: Fill in the blank (???) and spelling errors
+# PROBLEM 5: Fill in the blank (???) and spelling errors
 # Several of the plots below don't work. Make minimal changes to 
 # fix them
 
@@ -129,8 +119,8 @@ pairs(plot_data)
 
 
 
-# PROBLEM 8: Create a new plot that is more interesting & informative
-# If you need to, create more variables in the Tidy & Transform section above
+# PROBLEM 6: Create an additional plot. If you need to, create more variables 
+#
 #
 
 
@@ -140,9 +130,10 @@ pairs(plot_data)
 #-----------------
 
 
-# PROBLEM 9: Share your work.
+# PROBLEM 7: Share your work.
 # Output your data to a csv file
 # Save your best plot to a file
+# Specify where the output should go
 
 # Save the data you created
 write.csv(mtcars, file = ???)

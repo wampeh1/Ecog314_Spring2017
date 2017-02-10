@@ -8,7 +8,7 @@
 # Complete as many exercises as possible. If things aren't working, seek
 # assistance at the piazza site set up for the course.
 # 
-# TO SUBMIT: save your work in a .R file and submit it on the piazza site in the hw2 folder. 
+# TO SUBMIT: save your work in a .R file and submit it on the piazza site in the hw4 folder. 
 # Make sure you only share it with instructors or just with Shifrah.
 #-------------------------------------------------------------------------------
 
@@ -142,7 +142,7 @@
 # Extra Credit 2 #
 #----------------#
 
-# Complete the program we started in class 4 (eda_exercise.R)
+# Continue working through the program we started in class 4 (eda_exercise.R)
 # Download the *updated* version of the program tempalate from github and follow
 # the instructions in the comments
 #
