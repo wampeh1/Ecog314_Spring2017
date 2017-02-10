@@ -1,26 +1,37 @@
-# Exploratory Analysis
+# Exploratory Analysis Exercise
 #
 # What automotive features were good predictors of quarter mile time in 1974?
 # 
 # INSTRUCTIONS: complete the program below. You will need to make choices about 
-# what data to use, and fix several bugs... 
+# how to use the data, and fix several bugs. The comments with the prompt
+# "PROBLEM x" will provide additional instructions. When you are done post the
+# .R file to piazza under hw4 and share it with instructors
 #
 # Created <when> by <who>
 #-------------------------------------------------------------------------------
 
 # Set Working Directory
 
-setwd(???) # use the code here, or delete this line and use the menu
+# PROBLEM 1: working directory not set
+# Replace the setwd("") command below. If you're not sure what to type,
+# use the "Session" menu above to set the working directory to the location
+# of the current source file, then copy the command that appears in the console
+# remember to clear objects from your environment before you start
+
+setwd(???) 
+
 
 #------------------
 # Get Data
 #------------------
 
-# it's good to document your sources
+# PROBLEM 2: wrong url
+# replace it with https://raw.githubusercontent.com/wampeh1/Ecog314_Spring2017/master/lecture4/data/mtcars.csv
+# and download the data
 
 data_url <- "https://github.com/wampeh1/Ecog314_Spring2017/tree/master/lecture4/data/mtcars.csv"
 
-if ( ! file.exists("mtcars.csv") ) {
+if ( ! file.exists("mtcars.csv") | file.info("mtcars.csv")$size == 0 ) {
     download.file(data_url, "mtcars.csv")
 }
 
@@ -29,20 +40,25 @@ if ( ! file.exists("mtcars.csv") ) {
 # Import Data
 #------------------
 
-mtcars <- read.csv("mtcars.csv", stringsAsFactors = FALSE)
+mtcars <- read.csv("data/mtcars.csv", stringsAsFactors = FALSE)
+
 str(mtcars)
 head(mtcars)
+
+# inspect make and model
+unique(mtcars$mm)
 
 
 #-----------------
 # Tidy & Transform
 #-----------------
 
-# Create a variable with the make & model
-mtcars$make_and_model <- rownames(mtcars)
-
+# PROBLEM 3: power to weight ratio not calculated
+# Fix the assignment below using variables from the mtcars data frame
 # Compute power to weight ratio (fix the code below)
-mtcars??? <- hp / wt            
+
+mtcars$power_weight_ratio <- hp / wt
+
 
 
 # Identify imported/domestic cars (fix the code below)
@@ -51,29 +67,49 @@ import_makes <- c("Mazda", "Datsun", "Merc", "Fiat", "Honda",
                   "Toyota", "Lotus", "Porsche", "Ferrari", "Maserati", 
                   "Volvo")
 
+# PROBLEM 4: Loop to calssify import/domestic doesn't work
+# Fill in the ??? to create a loop that correctly assigns a label
+# to imported cars
+
 for ( make in import_makes ) {
-    has_matching_make <- grepl(make, make_and_model)
-    mtcars[i ???, "origin"] <- "imported"
+    print(paste("looking for:", make))
+    
+    has_matching_make <- grepl(make, mtcars$mm)
+    
+    print(paste("found:", mtcars[has_matching_make, "mm"]))
+    
+    mtcars[???, "origin"] <- "imported"
 }
 
-# as you get the loop above working for "origin", consider the following:
-# - what about missing values? can is.na(x) or ifelse() be of use?
-# - what about domestic cars?
+mtcars[mtcars$origin != "imported", "origin"] <- "domestic")
+
 
 
 #-----------------
 # Summarize
 #-----------------
 
-# is this summary informative?
+# PROBLEM 5: Summary isn't using the new variable, output is hard to read.
+# Change the aggregation to use the new "origin" variable
+# Assign the result of aggregate to a data frame, and give the 
+# columns names using the names() function or an alternative.
+# Lastly print the summary
+ 
 aggregate(mtcars$qsec,
           by = list(mtcars$gear),
           mean) 
+
+names(???) <- c(???)
+print(???)
 
 
 #-----------------
 # Visualize
 #-----------------
+
+# PROBLEM 6: Fill in the blank (???) and spelling errors
+# Several of the plots below don't work. Make minimal changes to 
+# fix them
 
 histergram(mtcars$qsec, xlab = "Quarter-Mile Time (seconds)")
 
@@ -87,19 +123,33 @@ plot(wt, qsec,
  
 
 plot_data <- subset(mtcars, select = c("qsec", "mpg", "hp", "???"))
+
 pairs(plot_data) 
 # a new plot style!
+
+
+
+# PROBLEM 8: Create a new plot that is more interesting & informative
+# If you need to, create more variables in the Tidy & Transform section above
+#
+
 
 
 #-----------------
 # Output files
 #-----------------
 
+
+# PROBLEM 9: Share your work.
+# Output your data to a csv file
+# Save your best plot to a file
+
 # Save the data you created
-write.csv(mtcars, file = "explore.csv")
+write.csv(mtcars, file = ???)
+
 
 # Save a plot image
-png(filename = "explore.png")
+png(filename = ???)
 hist(mtcars$qsec)
 dev.off()
 
