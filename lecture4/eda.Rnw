@@ -1,0 +1,1542 @@
+\documentclass{beamer}
+%\usetheme{Antibes}
+\usetheme{Darmstadt}
+\usepackage[noae]{Sweave}
+\usepackage{amsmath}
+%\usepackage{multirow}
+\usepackage{verbatim} 
+\newcommand{\R}[1]{\texttt{#1}}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+
+\title{Exploratory Data Analysis}
+\author{Damian Thomas}
+\date{2017-02-10}
+
+\begin{document}
+\SweaveOpts{concordance=FALSE}
+%===============================================================================
+
+%---------------------------------------
+\begin{frame}
+\maketitle
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Topics}
+\tableofcontents
+\end{frame}
+
+
+%---------------------------------------
+\section{Exploratory Data Analysis}
+\subsection{Definition}
+\begin{frame}
+\frametitle{Exploratory Data Analysis\footnote{Source: \url{https://en.Wikipedia.org/wiki/Exploratory_data_analysis}}}
+
+\begin{quote}
+``In statistics, exploratory data analysis (EDA) is an approach to analyzing data sets to summarize their main characteristics, often with visual methods.''
+\end{quote}
+\pause
+---
+
+Goals
+\begin{itemize}
+\item Suggest hypotheses about the causes of observed phenomena
+\item Assess assumptions on which statistical inference will be based
+\item Support the selection of appropriate statistical tools and techniques
+\item Provide a basis for further data collection through surveys or experiments
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Exploratory Analysis}
+
+Data-centric approach
+
+\begin{itemize}
+\item Informal--no defined model or assumptions
+\item Learn about the data, underlying structure
+\item Gather information to inform modelling choices
+\item Generate questions
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Confirmatory Analysis}
+
+Model-centric approach
+
+\begin{itemize}
+\item Formal--rigorous statistical methods
+\item Dependent on assumptions (random, normal, iid, linear, etc.)
+\item Model Specification (regressions, ANOVA)
+\item Parameter estimation \& hypothesis testing 
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\subsection{Motivating Example}
+\begin{frame}[fragile]
+\frametitle{Motivating Example}
+
+\begin{quote}
+``Anscombe's quartet comprises four data sets that have nearly identical simple descriptive statistics, yet appear very different when graphed. Each data set consists of eleven (x,y) points. They were constructed in 1973 by the statistician Francis Anscombe to demonstrate both the importance of graphing data before analyzing it and the effect of outliers on statistical properties.''\footnote{Source: \url{http://en.wikipedia.org/wiki/Anscombe's_quartet}}
+\end{quote}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+
+Access built-in data sets\footnote{?datasets for more}
+<< >>=
+data("anscombe")
+head(anscombe)
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+<< echo = FALSE >>=
+summary(anscombe[, c("x1", "y1")])
+data.frame(x1 = c(var(anscombe$x1), sd(anscombe$x1)),
+           y1 = c(var(anscombe$y1), sd(anscombe$y1)),
+           row.names = c("var:", "sd:"))
+data.frame(correlation = cor(anscombe$x1, anscombe$y1), row.names = "")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+<< echo = FALSE >>=
+summary(anscombe[, c("x2", "y2")])
+data.frame(x2 = c(var(anscombe$x2), sd(anscombe$x2)),
+           y2 = c(var(anscombe$y2), sd(anscombe$y2)),
+           row.names = c("var:", "sd:"))
+data.frame(correlation = cor(anscombe$x2, anscombe$y2), row.names = "")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+<< echo = FALSE >>=
+summary(anscombe[, c("x3", "y3")])
+data.frame(x3 = c(var(anscombe$x3), sd(anscombe$x3)),
+           y3 = c(var(anscombe$y3), sd(anscombe$y3)),
+           row.names = c("var:", "sd:"))
+data.frame(correlation = cor(anscombe$x3, anscombe$y3), row.names = "")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet}
+<< echo = FALSE >>=
+summary(anscombe[, c("x4", "y4")])
+data.frame(x4 = c(var(anscombe$x4), sd(anscombe$x4)),
+           y4 = c(var(anscombe$y4), sd(anscombe$y4)),
+           row.names = c("var:", "sd:"))
+data.frame(correlation = cor(anscombe$x4, anscombe$y4), row.names = "")
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Anscombe's Quartet\footnote{Source: \url{https://en.wikipedia.org/wiki/Anscombe's_quartet}}}
+
+\begin{table}
+\caption{Statistical Similarities (for all four data sets)}
+\begin{tabular}{|l|c|c|}
+\hline
+Property &	Value &	Accuracy \\ 
+\hline
+mean(x) &	9 &	exact \\
+var(x) &	11 & exact \\
+mean(y) &	7.50 &	to 2 decimal places \\
+var(y) &	4.125 &	plus/minus 0.003 \\
+cor(x, y) &	0.816 &	to 3 decimal places \\
+regression &	$y = 3.00 + 0.500x$ &	2 and 3 decimals \\  
+\hline
+\end{tabular}
+\end{table}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\begin{figure}
+<< fig=TRUE, echo = FALSE >>=
+plot(anscombe$x1, anscombe$y1, pch = "O", main = "Scatterplot of Anscombe's Quartet: 1 of 4", xlab = "x1", ylab = "y1")
+abline(lm(anscombe$y1 ~ anscombe$x1), lty = 2)
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\begin{figure}
+<< fig=TRUE, echo = FALSE >>=
+plot(anscombe$x2, anscombe$y2, pch = "O", main = "Scatterplot of Anscombe's Quartet: 2 of 4", xlab = "x2", ylab = "y2")
+abline(lm(anscombe$y2 ~ anscombe$x2), lty = 2)
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\begin{figure}
+<< fig=TRUE, echo = FALSE >>=
+plot(anscombe$x3, anscombe$y3, pch = "O", main = "Scatterplot of Anscombe's Quartet: 3 of 4", xlab = "x3", ylab = "y3")
+abline(lm(anscombe$y3 ~ anscombe$x3), lty = 2)
+@
+\end{figure}
+
+\end{frame} 
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\begin{figure}
+<< fig=TRUE, echo = FALSE >>=
+plot(anscombe$x4, anscombe$y4, pch = "O", main = "Scatterplot of Anscombe's Quartet: 4 of 4", xlab = "x4", ylab = "y4")
+abline(lm(anscombe$y4 ~ anscombe$x4), lty = 2)
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+\frametitle{Takeaways}
+
+\begin{itemize}
+\item Statistical similarity $\ne$ Data similarity
+\item Look at your data, visualize
+\item CYA: check your assumptions 
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\subsection{Data Analysis Process}
+\begin{frame}
+\frametitle{The Data Analysis Process\footnote{Source: R for Data Science \url{http://r4ds.had.co.nz/}}}
+
+<< echo = FALSE >>=
+image_url <- "http://r4ds.had.co.nz/diagrams/data-science.png"
+local_file <- file.path("images", basename(image_url))
+if ( !file.exists(local_file) ) {
+    download.file(image_url, local_file, method = "wget") 
+}
+@
+
+\begin{figure}
+\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{images/data-science}
+\end{figure}
+
+\begin{itemize}
+\item Have a question in mind
+\item Write code to carry out each step
+\item Save the code so you can reproduce (and share) your work
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\section{Toolbox}
+\begin{frame}
+
+\frametitle{Toolbox}
+\begin{itemize}
+\item Statistical Summaries
+    \begin{itemize}
+    \item Extremes: range, minimum, maximum
+    \item Location: median, mean
+    \item Spread: quartiles, variance, standard deviation
+    \item Shape: skew, modality
+    \item Interactions: tables, correlations
+    \end{itemize}
+\item Visualizations
+    \begin{itemize}
+    \item Box plot
+    \item Scatter plot
+    \item Line plot
+    \item Bar plot
+    \item Histogram
+    \end{itemize}
+\item Transformations
+    \begin{itemize}
+    \item Subset / Select
+    \item Create Variables
+    \item Aggregate
+    \item Merge
+    \end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\subsection{Statistical Functions}
+\begin{frame}
+\frametitle{Statistical Functions}
+
+\begin{itemize}
+\item \R{min()}, \R{max()}
+\item \R{mean()}, \R{median()}
+\item \R{sd()}, \R{var()}
+\item \R{quantile()}, \R{IQR()}
+\item \R{cov()}, \R{cor()}
+\item \R{summary()}
+\item \R{table()}
+\item etc., see \R{?stats} for more
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Review using functions: unnamed arguments}
+<< >>=
+sum(1, 2, 3)       # correct
+@
+\pause
+<< >>=
+mean(1, 2, 3)      # incorrect 
+@
+\pause
+<< >>=
+mean(c(1, 2, 3))   # correct, but why?
+@
+\pause
+The first unnamed argument of \R{mean()} is assumed to be an input vector, the rest are considered options. All of the unnamed arguments to \R{sum()} are assumed to be input vectors.
+<< eval = FALSE >>=
+?sum
+?mean
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Review using functions: named arguments}
+<< >>= 
+ # missing values are "contagious"
+1 + 2 + 3 + NA   
+sum(1, 2, 3, NA) 
+mean(c(1, 2, 3, NA))
+@
+\pause
+<< >>=
+# cure: exclude missing values
+sum(1, 2, 3, NA, na.rm = TRUE)
+mean(c(1, 2, 3, NA), na.rm = TRUE) 
+@
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Data: Motor Trend Car Road Tests}
+<< >>=
+data(mtcars) # load built-in data
+str(mtcars)  # view structure
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Example Data: Motor Trend Car Road Tests}
+<< eval = FALSE >>=
+?mtcars      # view documentation
+@
+\begin{verbatim}
+A data frame with 32 observations on 11 variables.
+[, 1] 	mpg 	Miles/(US) gallon
+[, 2] 	cyl 	Number of cylinders
+[, 3] 	disp 	Displacement (cu.in.)
+[, 4] 	hp 	    Gross horsepower
+[, 5] 	drat 	Rear axle ratio
+[, 6] 	wt 	    Weight (1000 lbs)
+[, 7] 	qsec 	1/4 mile time
+[, 8] 	vs    	V/S
+[, 9] 	am 	    Transmission (0 = automatic, 1 = manual)
+[,10] 	gear 	Number of forward gears
+[,11] 	carb 	Number of carburetors 
+\end{verbatim}
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+<< eval = FALSE >>=
+data(mtcars) # load bult-in data
+str(mtcars)  # view structure
+head(mtcars)
+?mtcars
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Running individual summary functions}
+<< >>=
+min(mtcars$mpg)
+mean(mtcars$mpg)
+median(mtcars$mpg)
+max(mtcars$mpg)
+quantile(mtcars$mpg)
+quantile(mtcars$mpg, probs = c(0.25, 0.75)) # use option
+@
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Shortcut: the summary() function}
+<<  >>=
+# Input a vector
+summary(mtcars$mpg)
+@
+\end{frame}
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Shortcut: the summary() function}
+<< >>=
+# Input a data frame
+summary(mtcars[, 1:3])
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+<< eval = FALSE >>=
+summary(mtcars)
+@
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Tabulate counts with table()}
+
+<< >>=
+table(mtcars$cyl)                # input 1 vector
+@
+\pause
+<< >>=
+table(mtcars$cyl, mtcars$am)     # input 2 vectors 
+@
+\pause
+<< >>=
+table(Cylinders = mtcars$cyl,    # input 2 vectors 
+      Manual    = mtcars$am)     # set labels
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Tabulate counts with table()}
+
+<< >>=
+table(mtcars[, c("cyl", "am")])  # input data frame
+@
+\end{frame}
+
+
+
+
+%---------------------------------------
+\subsection{Plotting Functions}
+\begin{frame}
+\frametitle{Plotting Functions}
+
+R has several distinct plotting systems
+\begin{itemize}
+\item Base R functions
+    \begin{itemize}
+    \item \R{hist()}
+    \item \R{barplot()}
+    \item \R{boxplot()}
+    \item \R{plot()}
+    \end{itemize}
+\item lattice package
+\item ggplot2 package
+\end{itemize}
+
+\end{frame} 
+
+
+%---------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Boxplot}
+
+<< eval = FALSE >>=
+boxplot(mtcars$mpg, 
+        main = "Miles per Gallon")
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Boxplot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+boxplot(mtcars$mpg, 
+        main = "Miles per Gallon")
+@
+\end{figure}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Boxplot Interpretation}
+
+Compare:
+<< eval = FALSE >>=
+boxplot(mtcars$mpg)
+@
+- vs -
+<< >>=
+summary(mtcars$mpg)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Boxplot}
+
+The boxplot function can also take a \textit{formula}\footnote{an expression using vectors and the $\sim$ operator. See \R{?formula} or \R{?}$\sim$ for more} as an argument
+
+\R{mpg} $\sim$ \R{cyl} ``mpg conditional on cyl''
+
+<< eval = FALSE >>=
+boxplot(mpg ~ cyl,
+        data = mtcars,
+        main = "Miles per Gallon by Number of Cylinders",
+        xlab = "Cylinders",
+        ylab = "Miles per Gallon")
+@
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+<< eval = FALSE >>=
+boxplot(mpg ~ cyl,
+        data = mtcars,
+        main = "Miles per Gallon by Number of Cylinders",
+        xlab = "Cylinders",
+        ylab = "Miles per Gallon")
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Boxplot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+boxplot(mpg ~ cyl,
+        data = mtcars,
+        main = "Miles per Gallon by Number of Cylinders",
+        xlab = "Cylinders",
+        ylab = "Miles per Gallon")
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Boxplot}
+<< eval = FALSE, echo = TRUE >>=
+# Expand the formula
+boxplot(mpg ~ cyl + am,
+        data = mtcars,
+        main = "MPG by Number of Cyliinders & Transmission")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Boxplot}
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+boxplot(mpg ~ cyl + am,
+        data = mtcars,
+        main = "MPG by Number of Cylinders & Transmission")
+@
+\end{figure}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Boxplot}
+<< eval = FALSE >>=
+# Relabel the x axis 
+
+xaxis <- c("Auto, 4", "Auto, 6", "Auto, 8",
+           "Man., 4", "Man., 6", "Man., 8")
+
+boxplot(mpg ~ cyl + am,
+        data = mtcars,
+        main = "MPG by Number of Cylinders & Transmission",
+        xlab = " ",
+        ylab = "Miles per Gallon",
+        names = xaxis)
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Boxplot}
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+xaxis <- c("Auto, 4", "Auto, 6", "Auto, 8",
+           "Man., 4", "Man., 6", "Man., 8")
+
+boxplot(mpg ~ cyl + am,
+        data = mtcars,
+        main = "MPG by Number of Cylinders & Transmission",
+        xlab = " ",
+        ylab = "Miles per Gallon",
+        names = xaxis)
+@
+\end{figure}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+<< eval = FALSE >>=
+boxplot(mpg ~ cyl,
+        data = mtcars,
+        main = "Miles per Gallon by Number of Cylinders",
+        xlab = "Cylinders",
+        ylab = "Miles per Gallon")
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Histogram}
+
+Takes a vector, and plots the distribution of values
+<< eval = FALSE >>=
+hist(mtcars$mpg)
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Histogram}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+hist(mtcars$mpg)
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Histogram}
+<< eval = FALSE >>=
+# Add options
+hist(mtcars$mpg, 
+     breaks = 10, 
+     main = "Histogram of Miles per Gallon", 
+     xlab = "Miles per gallon", 
+     col = "red")
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Histogram}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+hist(mtcars$mpg, 
+     breaks = 10, 
+     main = "Histogram of Miles per Gallon", 
+     xlab = "Miles per gallon", 
+     col = "red")
+@
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+
+<< eval = FALSE >>=
+hist(mtcars$mpg, 
+     breaks = 10, 
+     main = "Histogram of Miles per Gallon", 
+     xlab = "Miles per gallon", 
+     col = "red")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bar Plot}
+Takes a named vector and plots it
+<< >>=
+scores <- c(Falcons  = 28, 
+            Patriots = 34)
+@
+\pause
+<<  >>=
+barplot(scores)
+@
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Bar Plot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+barplot(scores)
+@
+
+\end{figure}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Bar Plot\footnote{Adapted from: \url{http://www.statmethods.net/graphs/bar.html}}}
+Use the table function create named vector with counts
+<< >>=
+counts <- table(mtcars$cyl) 
+counts
+@
+<< eval = FALSE >>=
+barplot(counts,  
+     main = "Number of Cars", 
+     xlab = "Cylinders")
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Bar Plot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+barplot(counts,  
+     main = "Number of Cars", 
+     xlab = "Cylinders")
+@
+
+\end{figure}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+Use the table function to create a two-way frequency table, and plotting options to group bars
+<< >>=
+counts <- table(mtcars$cyl, mtcars$am)
+colnames(counts) <- c("Auto", "Manual")
+@
+<< eval = FALSE >>=
+barplot(counts,  
+     main = "Number of Cars by Trasmission and Cylinders", 
+     xlab = "Trasmission",
+     beside = TRUE,
+     legend = rownames(counts))
+
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+barplot(counts,  
+     main = "Number of Cars by Trasmission and Cylinders", 
+     xlab = "Trasmission",
+     beside = TRUE,
+     legend = rownames(counts))
+@
+
+\end{figure}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+\begin{figure}
+<< eval = FALSE >>=
+# Tabulate
+counts <- table(mtcars$cyl, mtcars$am)
+colnames(counts) <- c("Auto", "Manual")
+
+# Plot
+barplot(counts,  
+     main = "Number of Cars by Trasmission and Cylinders", 
+     xlab = "Trasmission",
+     beside = TRUE,
+     legend = rownames(counts))
+@
+
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Scatterplot}
+
+<< eval = FALSE >>=
+plot(mtcars$mpg, 
+     mtcars$hp,
+     xlab = "Miles per Gallon",
+     ylab = "Horsepower")
+@
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Scatterplot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+plot(mtcars$mpg, 
+     mtcars$hp,
+     xlab = "Miles per Gallon",
+     ylab = "Horsepower")
+@
+\end{figure}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+
+<< eval = FALSE >>=
+plot(mtcars$mpg, 
+     mtcars$hp,
+     xlab = "Miles per Gallon",
+     ylab = "Horsepower")
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Scatterplot}
+
+<< eval = FALSE >>=
+# create a vector for conditional color coding
+colorcode <- ifelse(mtcars$am == 0, "red", "blue")
+
+plot(mtcars$mpg, 
+     mtcars$hp,
+     xlab = "Miles per Gallon",
+     ylab = "Horsepower",
+     col = colorcode)
+@
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}
+%\frametitle{Scatterplot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+# create a vector for color coding
+colorcode <- ifelse(mtcars$am == 0, "red", "blue")
+
+plot(mtcars$mpg, 
+     mtcars$hp,
+     xlab = "Miles per Gallon",
+     ylab = "Horsepower",
+     col = colorcode)
+@
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Line Plot}
+
+<< >>=
+set.seed(2017)
+random_step <- sample(c(-1, 0, 1), 10000, replace = TRUE)
+head(random_step)
+random_walk <- cumsum(random_step)
+head(random_walk)
+@
+
+<< eval = FALSE >>=
+plot(random_walk, 
+     type = "l")
+@
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+%\frametitle{Scatterplot}
+
+\begin{figure}
+<< echo = FALSE, fig = TRUE >>=
+plot(random_walk, type = "l")
+@
+\end{figure}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\subsection{Data Transformation}
+\begin{frame}
+\frametitle{Data Transformation}
+
+\begin{itemize}
+\item subset rows
+\item subset columns
+\item make new variables 
+\item aggregate rows
+\item merge data sets
+\end{itemize}
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subset Rows: \R{subset()}}
+
+<< >>=
+big_block <- subset(mtcars, disp > 328)
+@
+\pause
+<< >>=
+dim(mtcars)
+dim(big_block)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Subset Columns: \R{subset()}}
+
+<< >>=
+size_metrics <- subset(mtcars, 
+                       select = c("disp", "cyl", "wt"))
+@
+\pause
+<< >>=
+dim(mtcars)
+dim(size_metrics)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables: \R{<-}}
+
+\begin{itemize}
+\item Use subset operators to isolate the column, 
+\item Use the assignment operator to give it a new value. 
+\item If the target variable doesn't exist yet, it will be added.
+\end{itemize}
+
+<< >>=
+mtcars$power_wt_ratio <- mtcars$hp / mtcars$wt
+@
+\pause
+<< >>=
+dim(mtcars)
+head(mtcars[, c("hp", "wt", "power_wt_ratio")])
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables}
+
+Three styles to choose from. All of the subset operators work for this purpose. 
+
+<< eval = FALSE >>=
+mtcars$power_wt_ratio      <- mtcars$hp / mtcars$wt
+mtcars[["power_wt_ratio"]] <- mtcars$hp / mtcars$wt
+mtcars[, "power_wt_ratio"] <- mtcars$hp / mtcars$wt
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Try it}
+
+Compute horsepower to weight ratio
+<< eval = FALSE >>=
+mtcars$power_wt_ratio <- mtcars$hp / mtcars$wt
+head(mtcars[, c("hp", "wt", "power_wt_ratio")])
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables: examples}
+
+How might we go about creating variables to identify:
+\begin{itemize}
+\item fast cars (low 0-to-60 times)
+\item heavy cars (above averge weight)
+\item domestic vs import (based on make \& model name)
+\end{itemize}
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables: Assigning to a subset}
+
+Use the \R{[i, j]} format to subset rows. Only the observations specified by the \R{i} expression are affected. Repeat as neccessary
+\pause
+<< >>=
+# quantile threshold values
+q20 <- quantile(mtcars$qsec, probs = .20) 
+q80 <- quantile(mtcars$qsec, probs = .80) 
+@
+\pause
+<< >>=
+# pick rows for fast cars
+# write to the new variable "quickness"
+mtcars[mtcars$qsec <= q20, "quickness"]  <- "fast"
+@
+\pause
+<< >>=
+# only fast cars affected
+head(subset(mtcars, select = "quickness"))
+@
+
+\end{frame}
+ 
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Assigning to a subset of rows}
+
+Repeat for remaining subsets 
+<< >>=
+# pick rows for moderate cars
+# write to the existing variable "quickness"
+i <- q20 < mtcars$qsec & mtcars$qsec <= q80
+mtcars[i, "quickness"] <- "normal" 
+@
+\pause
+<< >>=
+# only moderate cars are affected
+head(subset(mtcars, select = "quickness"))
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables: Assigning to a subset}
+
+Repeat for last subset
+<< >>=
+mtcars[mtcars$qsec > q80, "quickness"]   <- "slow"
+head(subset(mtcars, select = "quickness"))
+@
+
+\end{frame}
+
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%
+%\begin{figure}
+%<< echo = FALSE, fig = TRUE >>=
+%boxplot(mpg ~ quickness, data = mtcars, main = "MPG by 0-60 time")
+%speedcolor <- c(fast = "red", normal = "green", slow = "blue")
+%plot(mtcars$qsec, mtcars$mpg, col = speedcolor[mtcars$quickness])
+%@
+%\end{figure}
+%
+%\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Make New Variables: vectorized condition}
+
+Alternate approach: \R{ifelse()} function
+
+<< >>=
+mean_wt <- mean(mtcars$wt)
+mtcars$weight_class <- ifelse(mtcars$wt <= mean_wt, 
+                              "light",  # true cases
+                              "heavy")  # false cases
+# result assigned conditionally
+head(subset(mtcars, select = c("wt", "weight_class")))
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{Create a new variable: \R{<-}}
+%
+%Here's an alternative using \R{cut()}
+%<< eeval = FALSE >>=
+%mtcars$quickness <- cut(mtcars$qsec,
+%                        breaks = quantile(mtcars$qsec, 
+%                                          probs = c(0, .20, .80, 1)),
+%                        labels = c("fast", "normal", "slow"))
+%@
+%
+%\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Aggregation: \R{aggregate()}}
+
+\R{aggregate()}: Splits the data into subsets, computes summary statistics for each, and returns the result\footnote{R documentation: \R{?aggregate()}}
+
+<< >>=
+aggregate(mtcars$mpg,            # data
+          by = list(mtcars$cyl), # grouping variables
+          mean)                  # function
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Aggregation: \R{aggregate()}}
+
+Multiple grouping variables can be used.
+<< >>=
+df <- aggregate(mtcars$mpg,             
+                by = list(mtcars$cyl, mtcars$am), 
+                mean)  
+names(df) <- c("cyl", "am", "avg_mpg")
+df
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging}
+
+Combine data frames based on shared values
+\pause
+<< echo = FALSE >>=
+A <- data.frame(x1 = letters[1:3], x2 = 1:3, stringsAsFactors = FALSE)
+B <- data.frame(x1 = letters[c(1,2,4)], x3 = c(TRUE, FALSE, TRUE), stringsAsFactors = FALSE)
+@
+
+<< >>=
+# Sample Data
+print(A)
+print(B)
+@
+
+\end{frame}
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging}
+
+Shared values of \R{x1} only
+<<  >>=
+df <- merge(A, B, by = "x1")
+@
+\pause
+<< >>=
+print(df)
+@
+
+\end{frame}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging}
+
+All values of \R{x1} from both/either
+<<  >>=
+df <- merge(A, B, by = "x1", all = TRUE)
+@
+\pause
+<< >>=
+print(df)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging}
+
+All values of \R{x1} in A
+<<  >>=
+df <- merge(A, B, by = "x1", all.x = TRUE)
+@
+\pause
+<< >>=
+print(df)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging}
+
+All values of \R{x1} in B
+<<  >>=
+df <- merge(A, B, by = "x1", all.y = TRUE)
+@
+\pause
+<< >>=
+print(df)
+@
+
+\end{frame}
+
+
+
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{Merging: insert rows}
+
+\R{rbind()} ``Stacks'' one data frame on top of the other. Required: same column names in both
+<<  >>=
+A$x3 <- NA         # add x3 column to A
+B$x2 <- NA         # add X2 column to B
+df <- rbind(A, B)  
+@
+\pause
+<< >>=
+print(df)
+@
+
+\end{frame}
+
+
+%---------------------------------------
+
+\begin{frame}[fragile]
+\frametitle{Get Data}
+
+\R{read.table()} family of functions: read raw data saved in delimited text files, and return a data frame object.
+
+<< eval = FALSE >>=
+?read.table()
+?read.csv()
+?read.delim()
+@
+
+
+\end{frame}
+
+
+%===============================================================================
+\end{document}
+
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+
+\end{frame}
+
+
+%---------------------------------------
+\begin{frame}[fragile]
+\frametitle{}
+
+\begin{columns}[T]
+\begin{column}[T]{.5\linewidth}@
+\end{column}
+\begin{column}[T]{.5\linewidth}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+
+
+
+
+\item Tukey's five number summary (for any distribution)
+    \begin{itemize}
+    \item minimum: smallest value
+    \item lower quartile: 25th percentile
+    \item median: middle value
+    \item upper quartile: 75th percentile
+    \item maximum: largest value
+    \end{itemize}
+
+
+
+
+%---------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{A dataset to merge}
+%
+%<< echo = FALSE>>=
+%model_info <- data.frame(model = rownames(mtcars), stringsAsFactors = FALSE)
+%
+%model_info$make <- gsub(' .*?$', '', rownames(mtcars))
+%
+%imports <- c("Mazda", "Datsun", "Merc", "Fiat", 
+%             "Honda", "Toyota", "Lotus", "Porsche", 
+%             "Ferrari", "Maserati", "Volvo")
+%
+%model_info$imported <- model_info$make %in% imports
+%
+%model_info <- subset(model_info, ! model_info$model %in% c("Valiant"))
+%@
+%
+%<< >>=
+%head(model_info)
+%@
+%
+%\end{frame}
+%
+%
+%
+%%---------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{Merging}
+%
+%Create a shared variable.
+%<<  >>=
+%mtcars$model <- rownames(mtcars)
+%@
+%\pause
+%Merge.
+%<<  >>=
+%cars <- merge(mtcars, model_info, by = "model")
+%dim(mtcars)
+%dim(cars)
+%
+%@
+%
+%\end{frame}
+%
+%
+%
+%---------------------------------------
+%\begin{frame}[fragile]
+%\frametitle{Merging}
+%
+%Create a shared variable.
+%<<  >>=
+%mtcars$model <- rownames(mtcars)
+%@
+%\pause
+%Merge.
+%<<  >>=
+%mtcars <- merge(mtcars, model_info, by = "model")
+%@
+%
+%\end{frame}
