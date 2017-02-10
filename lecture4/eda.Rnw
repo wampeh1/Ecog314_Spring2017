@@ -1152,7 +1152,7 @@ head(mtcars[, c("hp", "wt", "power_wt_ratio")])
 How might we go about creating variables to identify:
 \begin{itemize}
 \item fast cars (low 0-to-60 times)
-\item heavy cars (above averge weight)
+\item heavy cars (above average weight)
 \item domestic vs import (based on make \& model name)
 \end{itemize}
 
@@ -1164,7 +1164,7 @@ How might we go about creating variables to identify:
 \begin{frame}[fragile]
 \frametitle{Make New Variables: Assigning to a subset}
 
-Use the \R{[i, j]} format to subset rows. Only the observations specified by the \R{i} expression are affected. Repeat as neccessary
+Use the \R{[i, j]} format to subset rows. Only the observations specified by the \R{i} expression are affected. Repeat as necessary
 \pause
 << >>=
 # quantile threshold values
@@ -1522,7 +1522,6 @@ print(df)
 %@
 %
 %\end{frame}
-%
 %
 %
 %---------------------------------------
