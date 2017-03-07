@@ -161,3 +161,10 @@ You don't need a computer to make a good chart
 ========================================================
 
 ![](images/good/xkcd-988-tradition.png)
+
+Telling stories with data
+========================================================
+
+![](images/good/fandango.png)
+
+Source: https://cran.r-project.org/web/packages/fivethirtyeight/vignettes/fivethirtyeight.html
