@@ -21,7 +21,7 @@ type: sub-section
 
   * Charts that are difficult to understand
     * Unlabeled axis
-    * Indistinguisable colors
+    * Indistinguishable colors
     * Nonsensical
 
 Poor Color, Inconsistent X Scale
