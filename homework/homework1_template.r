@@ -1,4 +1,4 @@
-# HOMEWORK 1
+# HOMEWORK 1 -- William Ampeh
 # 
 # DESCRIPTION: In this assignment we will use base R functions to work with 
 # vectors. The end goals are to practice using R, to create a working program, 
@@ -45,7 +45,7 @@
 
 # (RESPOND ONLINE)
 
-
+pri
 # Part 3. Post one question you might have about R, about the class, 
 #         or about the homework on Piazza site.
 
@@ -62,21 +62,22 @@
 
 # (INSERT YOUR SOLUTION HERE)
 
+greeting <- "Hello World!"
 
 # Part 2. Show the contents of greeting using the print() function
 
 # (INSERT YOUR SOLUTION HERE)
-
+print(greeting)
 
 # Part 3. Show the contents of greeting without using the print() function
 
 # (INSERT YOUR SOLUTION HERE)
-
+greeting
 
 # Part 4. Write a line of code to display the help for the print() function. 
 
 # (INSERT YOUR SOLUTION HERE)
-
+help(print)
 
 
 
@@ -87,12 +88,14 @@
 # Part 1. Assign the value 1 to an object called "x" and print the result
 
 # (INSERT YOUR SOLUTION HERE)
-
+x <-  1
+print(x)
 
 # Part 2. Assign the value 2 to an object called "y" and print the result
 
 # (INSERT YOUR SOLUTION HERE)
-
+y <- 2
+print(y)
 
 # Part 3. Compute the sum of x and y using the "+" operator. Assign the result 
 #         to an object called "z" and print the result. The result should be 3.
@@ -100,14 +103,15 @@
 #         desired result in part 3. 
 
 # (INSERT YOUR SOLUTION HERE)
-
+z <- x + y
+z
 
 # Part 4. Compute the sum of x and y using the sum() function. The result 
 #         should also be 3
 
 # (INSERT YOUR SOLUTION HERE)
 
-
+sum(x, y)
 
 
 #------------#
@@ -120,13 +124,15 @@
 #         these functions to see examples.
 
 # (INSERT YOUR SOLUTION HERE)
-
+numbers <-  c(1:5)
+numbers <- seq(from=1, to=5)
+print(numbers)
 
 # Part 2. Use a function to confirm that there are 5 elements in the object
 #         just created. Use a function to find the length of the vector. 
    
 # (INSERT YOUR SOLUTION HERE)
-
+length(numbers)
 
 # Part 3. Create a vector containing the first five even numbers between 1-10. 
 #         Use the "numbers" vector created above in your solution. Assign the
@@ -135,14 +141,19 @@
 #         "numbers" vector.
 
 # (INSERT YOUR SOLUTION HERE)
-
+numbers10 <- 1:10
+even_numbers <- numbers10[ numbers10 %% 2 == 0] 
+even_numbers <- numbers * 2
 
 # Part 4. Use the "+" operator to add the two vectors created above, numbers 
 #         and even_numbers. Then insert a comment to tell the reader how many 
 #         elements should be in the result
     
 # (INSERT YOUR SOLUTION HERE)
+numbers + even_numbers
 
+#number of elements
+length(numbers + even_numbers)           # 5 elements
 
 # Part 5. Use the sum() function to sum the elements in the two vectors created 
 #         above, numbers and even_numbers. How is the result different from
@@ -150,6 +161,9 @@
 
 # (INSERT YOUR SOLUTION HERE)
 
+sum(numbers, even_numbers)   # 45
+
+# part  4 resulted in vector of size 5 and part 5 a number
 
 
 
@@ -164,7 +178,7 @@
 short <- c(-1, 1)
 
 # (INSERT YOUR SOLUTION HERE)
-
+numbers * short  
 
 # Part 2. Review the result of part 1. Determine if the 3rd element in the 
 #         result is positive or negative.  Record your answer in a vector 

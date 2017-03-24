@@ -16,7 +16,7 @@ library(knitr)
 theme_set(theme_gray())
 
 ## CHANGE THESE VARIABLES TO READ IN THE TREASURY DATA
-treasuries <- read_csv()
+treasuries <- read_csv("treasuries.csv")
 
 
 # Base Line Graph ---------------------------------------------------------
@@ -157,7 +157,7 @@ scatter + geom_point(aes(color = variable))
 
 # In Class Exercise 2 -----------------------------------------------------
 
-inClass2 <- 
+inClass2 <- ``
     
 inClass2
 
