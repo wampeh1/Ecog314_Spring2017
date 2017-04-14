@@ -1,0 +1,152 @@
+---
+title: "Vectorization in R"
+output: pdf_document
+---
+
+Previously, we covered how loops can simplify programming by automating repetitive tasks.  For the smaller datasets that we've been working with so far, loops are an effective tool.  However, once you start working with larger datasets, the way that R was built means that loops start taking up considerable amounts of time and processing resources.  Today we'll talk about one way to correct for this issue, vectorization.
+
+## What is a vector
+Recall that a vector is just a collection of individual data points, all of the same type.  Because they must be of the same type, any operation or function that works on one entry in the vector must work all every entry.  Writing a function in a way that automatically applies it to every entry in a vector is what's known as vectorization.  
+
+You've already used vectorized functions.  *, +, -, / are all vectorized
+```{r}
+vector1 <- c(1, 3, 5, 7, 9)
+vector2 <- c(12, 54, 72, 19, 49)
+
+vector3 <- vector1 + vector2
+vector3
+
+vector4 <- vector1 - vector2
+vector4
+```
+
+Compare this with the loop you'd need to do the same operation:
+```{r}
+vector3 <- rep(0, length(vector1))
+
+for(i in 1:length(vector1)) {
+  vector3[i] <- vector1[i] + vector2[i]
+}
+
+vector3
+```
+
+As you can see, a vectorized function is easier to read and to use in code than creating a loop.  
+
+## How it works
+Simply, under the hood, R is a coding language built using another coding language, most often C or C++.  When you code in R, R translates the code you create into C/C++ code, which the computer then executes.  When you submit a loop to R to evaulate, it sends the data to C every iteration of the loop.  When R sends the data, it has to tell C what data types there are, where to allocate memory, etc etc etc.  
+
+With a loop, every single run through the loop requires these overhead operations.  Vectorized functions, on the other hand, are built so that they only need to handle this once, saving all those resources.  This can add up to substantial time savings, both on the computer end and for whoever has to read the code later on.  
+
+## Apply in R
+
+Because R handles loops poorly, a family of functions was built to provide a workaround, the Apply family.  This family of functions is built into base R, and is used to perform non-vectorized functions on vectors, matricies, or data frames.
+
+The functions that can be called can do a great number of things:  
+
+* Aggregate data  
+* Transform, or subset larger datasets  
+* Functions that return more complex objects, like vectors, matricies, or data frames  
+
+As per usual, take a look at the ?apply family to start understanding what these functions do
+```{r}
+?apply
+```
+The basic apply function takes in (at least) three arguments:
+X is the array that you want to perform a function over
+MARGIN is whether you want to perform the function over the rows, the columns, or both
+FUN is the function itself
+... are other arugments that you may need to feed into the function (na.rm = TRUE, for example)
+
+The easiest way to really understand is by doing, so let's look at some examples, using the state-level employment data from another lecture:
+```{r}
+stateEmploy <- read.csv("employmentByState.csv")
+
+head(stateEmploy)
+```
+
+(Recall that this is the total number of employed persons, in thousands.)
+Note that this is time series data, we have one column of dates, and 50 columns of numerics, so we'll need to use the [ notation to select only the data that we want.
+
+### Apply
+Let's see what the median level of employment is for each state.
+
+```{r}
+apply(X = stateEmploy[, -1], MARGIN = 2, FUN = median)
+```
+
+Now, consider the same process, but with a loop:
+```{r}
+medianEmploy <- as.numeric()
+for(i in 2:ncol(stateEmploy)) {
+  tempEmploy <- median(stateEmploy[, i])
+  medianEmploy <- c(medianEmploy, tempEmploy)
+}
+medianEmploy
+                       
+```
+
+A few things to note:  
+
+1.  The same components of a loop are present in the apply function.  You have your data, you have what you want to do with it, and you have the rows/columns you want to analyze.  
+2.  The output isn't as "neat" with the loop, since the names aren't carrying over.  We'd need to add in more of code to make that happen.  
+3.  The loop takes up more space, and is harder to read and understand.  
+Let's check the data, but by year, now
+```{r}
+apply(X = stateEmploy[, -1], MARGIN = 1, FUN = median)
+```
+
+This required the edit of a single number from the first apply.  To modify the loop to do the same, we'd need to edit the ncol to nrow, then go into the loop and move around commas to make the function run over rows instead of commas.  This was a very simple loops, with just one edit to make in the loop.  You can see how more complicated loops would be far harder to edit, and far easier to make a mistake.
+
+The apply family extends beyond just the basic "apply" function.  Let's work through a few other examples.
+
+## lapply
+lapply works in a similar way as apply, but returns a list instead of a vector
+```{r}
+lapply(stateEmploy[, -1], median)
+```
+
+## sapply
+sapply stands for "simplified apply", and is a user-friendly version of lapply that returns vectors or matricies (as appropriate).
+
+```{r}
+sapply(stateEmploy[, -1], median)
+```
+
+Note the similarity to base apply.  The difference here is that sapply is more data frame-friendly, as base apply forces the data frame into a matrix before calculating.  This can save you time with larger data sets.  The trade off is that sapply only runs over rows, not columns.  
+
+## vapply
+vapply lets you supply a third argument, which is how you want the output formatted.  This makes more sense through example:
+```{r}
+vapply(stateEmploy[, -1], fivenum, 
+       c(Min.=0, "1st Qu."=0, Median=0, "3rd Qu."=0, Max.=0))
+```
+
+You can see how this one, in particular, would be very useful for prelimnary data analysis
+
+## mapply
+A multivariate version of sapply.  mapply applies the function to the first elements of each input, then the second, and so on. Useful for working with multiple data frames.
+```{r}
+l1 <- list(a = c(1:10), b = c(11:20))
+l2 <- list(c = c(21:30), d = c(31:40))
+mapply(sum, l1$a, l1$b, l2$c, l2$d)
+```
+
+The state-level data file was built by reading in 51 individual files and merging them.  We didn't have to do that, we could have used mapply to save ourselves some steps (arguably at the expense of readability).
+
+## Replicate
+Replicate is a "wrapper" for sapply, but used to repeatedly evaluate a given function (usually a random number generator)
+
+```{r}
+replicate(10, runif(10, 0, 100))
+```
+As you can see, this is extremely useful for building data sets for testing and simulation purposes.
+
+## When to stick with Loops
+
+There are still some cases where it makes sense to use a loop.  
+* Functions that don't take in vector arguments
+* Loops where each iteration is dependent on the results of the previous iteration
+
+Note that there are even some times when the second case can be vectorized, such as cumsum (cumulative sums), or rle (counting repeated values)
+

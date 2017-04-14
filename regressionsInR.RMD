@@ -1,0 +1,94 @@
+---
+title: "Regressions and Broom"
+output: html_document
+---
+
+## Regressions in R
+We've seen, over past lectures, that there are times when the base R package is improved through packages like dplyr and ggplot2.  These packages are part of a family of packages that use the concept of "tidy data".  The basic idea behind "tidy" data is producing data stored in a consistent form, where:  
+* Each column is a variable  
+* Each row an observation  
+
+### Basic Regressions
+Lets return to the baseball data from earlier:
+```{r, include = FALSE}
+baseball_data <- read.csv("baseball_data.csv")
+library(broom)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+head(baseball_data)
+```
+
+Using the "fancy" model:
+```{r}
+fancy_model <- lm(salary ~ HR + BA + frac_won + G + yearID, data = baseball_data)
+
+fancy_model
+```
+
+In base R, if you need to extract the regression outputs, you need to use the $ notation on the regression output:
+```{r}
+fancy_model$coefficients
+
+head(fancy_model$residuals)
+
+head(fancy_model$fitted.values)
+
+head(fancy_model$rank)
+```
+
+You can see, since the lengths are all different, that this is a unique R object, not a data frame, or vector, like you're used to.  If you want to plot it in ggplot2, you'll need to extract the part(s) you want, and merge them together with the dates from the original dataset to create a new data set to plot ove
+
+This can make it a challenge for you to work with, since you need a unique set of code rules in your head to extract what you need.  This is where the broom package comes in, to clean up the results and make a tidy object that you can just use in ggplot, dplyr, and so on.
+
+There are three methods that Broom uses to tidy up data.  "tidy", "augment", and "glance".  Let's take each in turn.
+
+## Tidy
+Tidy constructs a data frame that sumamrizes the regression model's statistical findings.  The data frame contains coefficients, p-values for each term in the model, etc.
+```{r}
+tidy(fancy_model)
+```
+
+Now we have the regression results presents as a data frame, an object you already know how to use.  Note that there is now a "term" column, with each row as a coefficient value.  This makes it much easier to compare models and perform more advanced statisical techniques.
+
+What's more, we can now combine the "tidy" regression format with the "tidy" data that dplyr uses, for some handy new techniques. For example, we can run multiple regressions on this data set with a single command, like so:
+```{r}
+super_fancy_model <- baseball_data %>% group_by(lgID) %>% do(tidy(lm(salary ~ HR + BA + frac_won + G + yearID, .)))
+```
+Now we have the same fancy regression, but broken out by the two leagues.  With only minor code edits, we can now compare the effects of salary components across another field.
+
+Tidy also gives you an easy way to look at confidence intervals for your coefficients, with a simple argument.
+```{r}
+tidy_model <- tidy(fancy_model, conf.int = TRUE)
+
+tidy_model
+```
+
+Since we have a data frame, we can write it to a .csv file, just like any other data frame that we've worked with.  The basic regression output requires you to either write a text file or install a package that can deal with latex in order to produce a readable output.
+
+## Augment
+Augment, like tidy, cleans up the output of a regression.  Augment, however, is there to "augment" the original data with the regression results, namely the residuals and expected fitted values.
+
+```{r}
+head(augment(fancy_model))
+```
+Augment returns a data frame with the original data (and only the data used in the regression), along with fitted values, standard errors, residuals, and so on.  Again, since we now have a data frame with these values, we can use the other "tidy" tools in conjunction to produce some useful products very easily.
+
+Using the basic lm command, there is no "built-in" connection between the original data and the outputs of the regression.  If you want to plot actual vs. expected values, you'd have to cbind in the new data.  This is a problem because you can't merge them, you have to take the extra steps to make sure that nothing about the order of the data has changed during your data analysis before binding them together.
+
+Again, since these results are now in a tidy format, we can write to an output file cleanly, without multiple bind commands before hand to manually create a new data frame.
+
+## Glance
+Finally, we look at the "glance" command.  As suggested by the name, this command gives you a one-row glance at the important measures of how accurate your model is to the data.
+```{r}
+glance(fancy_model)
+
+```
+
+Once more, we can output these results cleanly to a file without having to pop out and bind each of the terms of interest to a new data frame.
+
+### Stargazer and xTable
+Now that we have nice, clean regression results, we have to consider how to present them.  There are two popular packages to help, stargazer and xtable.
+
